@@ -54,6 +54,28 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     :return: The Tensor for the last layer of output
     """
     # TODO: Implement function
+    encoder_layer3 = tf.layers.conv2d(vgg_layer3_out, 256, 1, strides=(1, 1), padding='same', name='encoder_layer3')
+    # encoder_layer3 = tf.nn.relu(encoder_layer3)
+
+    encoder_layer4 = tf.layers.conv2d(vgg_layer4_out, 512, 1, strides=(1, 1), padding='same', name='encoder_layer4')
+    # encoder_layer4 = tf.nn.relu(encoder_layer4)
+
+    encoder_layer7 = tf.layers.conv2d(vgg_layer7_out, 1024, 1, strides=(1, 1), padding='same', name='encoder_layer7')
+    # encoder_layer7 = tf.nn.relu(encoder_layer7)
+
+    decoder_layer1 = tf.layers.conv2d_transpose(encoder_layer7, 512, 4, strides=(2, 2), padding='same')
+    # decoder_layer1 = tf.nn.relu(decoder_layer1)
+    decoder_layer1 = tf.add(decoder_layer1, encoder_layer4, name='decoder_layer1')
+
+    decoder_layer2 = tf.layers.conv2d_transpose(decoder_layer1, 256, 4, strides=(2, 2), padding='same')
+    # decoder_layer2 = tf.nn.relu(decoder_layer2)
+    decoder_layer2 = tf.add(decoder_layer2, encoder_layer3, name='decoder_layer2')
+
+    decoder_layer3 = tf.layers.conv2d_transpose(decoder_layer2, num_classes, 16, strides=(8, 8), padding='same',
+                                                name='decoder_layer3')
+
+    return decoder_layer3
+    """
     conv_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same',
                                 kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     decoder_4 = tf.layers.conv2d(conv_1x1, num_classes, 4, 2, padding='same',
@@ -70,7 +92,7 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
 
     output = tf.layers.conv2d_transpose(decoder_3_skip, num_classes, 16, strides=(8, 8), padding='same',
                                         kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
-    return output
+    return output"""
 tests.test_layers(layers)
 
 

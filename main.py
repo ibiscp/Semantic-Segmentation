@@ -5,7 +5,7 @@ import warnings
 from distutils.version import LooseVersion
 import project_tests as tests
 import time
-from moviepy.editor import VideoFileClip
+#from moviepy.editor import VideoFileClip
 
 # Check TensorFlow Version
 assert LooseVersion(tf.__version__) >= LooseVersion('1.0'), 'Please use TensorFlow version 1.0 or newer.  You are using {}'.format(tf.__version__)
@@ -183,7 +183,7 @@ def run():
     # You'll need a GPU with at least 10 teraFLOPS to train on.
     #  https://www.cityscapes-dataset.com/
 
-    saver = tf.train.Saver()
+    #saver = tf.train.Saver()
 
     with tf.Session(config=config) as sess:
         # Path to vgg model

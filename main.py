@@ -5,6 +5,7 @@ import warnings
 from distutils.version import LooseVersion
 import project_tests as tests
 import time
+from moviepy.editor import VideoFileClip
 
 # Check TensorFlow Version
 assert LooseVersion(tf.__version__) >= LooseVersion('1.0'), 'Please use TensorFlow version 1.0 or newer.  You are using {}'.format(tf.__version__)
@@ -182,6 +183,8 @@ def run():
     # You'll need a GPU with at least 10 teraFLOPS to train on.
     #  https://www.cityscapes-dataset.com/
 
+    saver = tf.train.Saver()
+
     with tf.Session(config=config) as sess:
         # Path to vgg model
         vgg_path = os.path.join(data_dir, 'vgg')
@@ -201,7 +204,7 @@ def run():
         logits, train_op, cross_entropy_loss = optimize(layer_output, correct_label, 0.001, num_classes)
         get_batches_fn = helper.gen_batch_function(os.path.join(data_dir, 'data_road/training'), image_shape)
 
-        train_nn(sess=sess, epochs=20, batch_size=10,
+        train_nn(sess=sess, epochs=30, batch_size=30,
                  get_batches_fn=get_batches_fn,
                  train_op=train_op, cross_entropy_loss=cross_entropy_loss, input_image=vgg_input,
                  correct_label=correct_label, keep_prob=keep_prob, learning_rate=0.001)
@@ -209,8 +212,15 @@ def run():
         # TODO: Save inference data using helper.save_inference_samples
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, vgg_input)
 
+        # Save session
+        #saver.save(sess, 'model')
+
         # OPTIONAL: Apply the trained model to a video
 
+    #project_output = 'challenge_video.mp4'
+    #clip = VideoFileClip("project_video.mp4")
+    #output_clip = clip.fl_image(process_image)
+    #output_clip.write_videofile(project_output, audio=False)
 
 if __name__ == '__main__':
     run()
